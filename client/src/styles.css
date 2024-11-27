@@ -1,0 +1,65 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Quicksand:wght@300..700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Forced Colors Mode Support */
+@media (forced-colors: active) {
+  /* Add high contrast support */
+  .btn {
+    forced-color-adjust: none;
+  }
+  
+  .input, .select, .textarea {
+    forced-color-adjust: none;
+  }
+
+  .editor {
+    forced-color-adjust: none;
+  }
+}
+
+/* Base styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Editor styles */
+.tox-tinymce {
+  border-radius: 0.5rem !important;
+}
+
+.tox .tox-toolbar__primary {
+  background: none !important;
+}
+
+.tox .tox-edit-area__iframe {
+  background: none !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .tox .tox-toolbar,
+  .tox .tox-toolbar__overflow,
+  .tox .tox-toolbar__primary {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+  
+  .tox .tox-tbtn {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  .tox .tox-tbtn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+* {
+  font-family: "Quicksand", sans-serif;
+}

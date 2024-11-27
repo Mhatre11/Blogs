@@ -1,0 +1,89 @@
+<!-- Desktop and Mobile Navigation -->
+<div class="navbar bg-base-100 shadow-lg">
+  <div class="flex-1">
+    <a class="btn btn-ghost text-xl text-content-primary hover:bg-base-200 px-4" routerLink="/">My Blog App</a>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div class="flex-none md:hidden">
+    <div class="dropdown dropdown-end">
+      <label tabindex="0" class="btn btn-ghost btn-circle lg:hidden text-content-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+      </label>
+      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-base-100 rounded-box w-52">
+        <li><a routerLink="/blogs" routerLinkActive="active" class="text-content-primary hover:bg-base-200">Blogs</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" class="text-content-primary hover:bg-base-200">About Us</a></li>
+        @if (authService.isAdmin) {
+          <li><a routerLink="/admin/blogs" routerLinkActive="active" class="text-content-primary hover:bg-base-200">
+            <i class="fa fa-list-ul mr-2"></i>Manage Blogs
+          </a></li>
+          <li><a routerLink="/admin/blogs/create" routerLinkActive="active" class="text-content-primary hover:bg-base-200">
+            <i class="fa fa-plus mr-2"></i>New Blog
+          </a></li>
+        }
+        @if (!authService.isLoggedIn) {
+          <li><a routerLink="/login" routerLinkActive="active" class="text-content-primary hover:bg-base-200">
+            <i class="fa fa-sign-in mr-2"></i>Login
+          </a></li>
+        } @else {
+          <li><a (click)="authService.logout()" class="text-content-primary hover:bg-base-200 cursor-pointer">
+            <i class="fa fa-sign-out mr-2"></i>Logout
+          </a></li>
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Desktop Menu -->
+  <div class="flex-none hidden md:flex items-center gap-4">
+    <ul class="menu menu-horizontal px-1 gap-2">
+      <li><a routerLink="/blogs" routerLinkActive="active" class="text-content-primary hover:bg-base-200 rounded-lg">Blogs</a></li>
+      <li><a routerLink="/about" routerLinkActive="active" class="text-content-primary hover:bg-base-200 rounded-lg">About Us</a></li>
+    </ul>
+
+    @if (authService.isAdmin) {
+      <div class="divider divider-horizontal"></div>
+      <div class="flex gap-2">
+        <a routerLink="/admin/blogs" class="btn btn-ghost btn-sm gap-2 text-content-primary">
+          <i class="fa fa-list-ul"></i>
+          Manage Blogs
+        </a>
+        <a routerLink="/admin/blogs/create" class="btn btn-ghost btn-sm gap-2 text-content-primary">
+          <i class="fa fa-plus"></i>
+          New Blog
+        </a>
+      </div>
+    }
+
+    <div class="divider divider-horizontal"></div>
+
+    @if (!authService.isLoggedIn) {
+      <a routerLink="/login" class="btn btn-ghost btn-sm gap-2 text-content-primary">
+        <i class="fa fa-sign-in"></i>
+        Login
+      </a>
+    } @else {
+      <div class="dropdown dropdown-end">
+        <label tabindex="0" class="btn btn-ghost btn-sm gap-2 text-content-primary">
+          <i class="fa fa-user-circle"></i>
+          Account
+          <i class="fa fa-chevron-down text-xs"></i>
+        </label>
+        <ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow-lg bg-base-100 rounded-box w-52 mt-4">
+          <li>
+            <a class="text-content-primary hover:bg-base-200" (click)="authService.logout()">
+              <i class="fa fa-sign-out mr-2"></i>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+ 
+</style>

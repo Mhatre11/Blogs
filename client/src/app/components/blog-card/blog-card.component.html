@@ -1,0 +1,56 @@
+<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden">
+  <!-- Image Container with Overlay -->
+  <figure class="relative h-48 overflow-hidden">
+    <img 
+      [src]="blog.image || 'assets/images/placeholder-blog.jpg'" 
+      [alt]="blog.title"
+      class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+      (error)="onImageError($event)"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-base-100 to-transparent opacity-60"></div>
+    
+    <!-- Category Badge -->
+    <div class="absolute top-4 left-4">
+      <div class="badge badge-primary gap-2 font-medium">
+        <i class="fa fa-tag text-xs"></i>
+        {{ categoryName }}
+      </div>
+    </div>
+  </figure>
+
+  <div class="card-body p-6">
+    <!-- Title -->
+    <h2 class="card-title text-xl font-bold text-black mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+      {{ blog.title }}
+    </h2>
+
+    <!-- Description -->
+    <p class="text-content-secondary text-sm line-clamp-3 mb-4">
+      {{ blog.description }}
+    </p>
+
+    <!-- Footer -->
+    <div class="card-actions justify-between items-center mt-auto">
+      <!-- Date -->
+      <ng-container *ngIf="blog.createdAt; else noDate">
+        <span class="text-content-muted text-sm">
+          {{ blog.createdAt | date:'mediumDate' }}
+        </span>
+      </ng-container>
+      <ng-template #noDate>
+        <span class="text-content-muted text-sm">
+          Recently added
+        </span>
+      </ng-template>
+
+      <!-- Read More Button -->
+      <a 
+        [routerLink]="['/blog', blog.blogId]" 
+        class="btn btn-primary btn-sm gap-2 normal-case"
+      >
+        Read More
+        <i class="fa fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+  </div>
+</div>

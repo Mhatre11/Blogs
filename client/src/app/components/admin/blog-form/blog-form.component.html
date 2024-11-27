@@ -1,0 +1,168 @@
+<div class="min-h-screen bg-base-100 py-8">
+  <div class="container mx-auto px-4 max-w-4xl">
+    <!-- Header Section -->
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-content-primary">{{ isEdit ? 'Edit' : 'Create' }} Blog</h1>
+        <p class="text-content-secondary mt-2">Fill in the details below to {{ isEdit ? 'update' : 'create' }} your blog post.</p>
+      </div>
+      <a routerLink="/admin/blogs" class="btn btn-ghost btn-sm gap-2">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+        Back to Blogs
+      </a>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="bg-base-200 rounded-xl shadow-lg">
+      @if (error) {
+        <div class="p-4 bg-error/10 text-error rounded-t-xl">
+          <p>{{ error }}</p>
+        </div>
+      }
+      @if (loading) {
+        <div class="flex justify-center items-center min-h-[400px]">
+          <div class="flex flex-col items-center gap-4">
+            <span class="loading loading-spinner loading-lg"></span>
+            <p class="text-content-secondary">{{ isEdit ? 'Loading blog data...' : 'Preparing form...' }}</p>
+          </div>
+        </div>
+      } @else {
+        <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="p-8 space-y-8">
+          <!-- Title & Category Section -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <!-- Title -->
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-black">Title</span>
+                <span class="label-text-alt text-content-muted">Give your blog post a title</span>
+              </label>
+              <input type="text" formControlName="title" 
+                     class="input input-bordered w-full" 
+                     [ngClass]="{'input-error': submitted && f['title'].errors}"
+                     placeholder="Enter an engaging title">
+              @if (submitted && f['title'].errors) {
+                <label class="label">
+                  <span class="label-text-alt text-error">{{ getErrorMessage('title') }}</span>
+                </label>
+              }
+            </div>
+
+            <!-- Category -->
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-black">Category</span>
+                <span class="label-text-alt text-content-muted">Choose a category for your blog</span>
+              </label>
+              <select formControlName="categoryId" 
+                      class="select select-bordered w-full"
+                      [ngClass]="{'select-error': submitted && f['categoryId'].errors}">
+                <option [ngValue]="0">Select a category</option>
+                @for (category of categories; track category.categoryId) {
+                  <option [ngValue]="category.categoryId">{{ category.name }}</option>
+                }
+              </select>
+              @if (submitted && f['categoryId'].errors) {
+                <label class="label">
+                  <span class="label-text-alt text-error">{{ getErrorMessage('categoryId') }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Image URL & Preview -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium text-content-primary">Featured Image</span>
+            </label>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <input type="text" formControlName="image" 
+                       class="input input-bordered w-full"
+                       [ngClass]="{'input-error': submitted && f['image'].errors}"
+                       placeholder="Paste image URL here">
+                @if (submitted && f['image'].errors) {
+                  <label class="label">
+                    <span class="label-text-alt text-error">{{ getErrorMessage('image') }}</span>
+                  </label>
+                }
+              </div>
+              <div class="relative">
+                @if (blogForm.get('image')?.value) {
+                  <div class="aspect-video rounded-lg overflow-hidden bg-base-300">
+                    <img [src]="blogForm.get('image')?.value" 
+                         alt="Blog image preview" 
+                         class="w-full h-full object-cover"
+                         (error)="handleImageError($event)">
+                  </div>
+                } @else {
+                  <div class="aspect-video rounded-lg bg-base-300 flex items-center justify-center">
+                    <span class="text-content-muted">Image preview</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium text-content-primary">Description</span>
+              <span class="label-text-alt text-content-muted">Brief summary of your blog post</span>
+            </label>
+            <textarea formControlName="description" 
+                      class="textarea textarea-bordered h-24"
+                      [ngClass]="{'textarea-error': submitted && f['description'].errors}"
+                      placeholder="Write a compelling description that captures readers' attention"></textarea>
+            @if (submitted && f['description'].errors) {
+              <label class="label">
+                <span class="label-text-alt text-error">{{ getErrorMessage('description') }}</span>
+              </label>
+            }
+          </div>
+
+          <!-- Content (TinyMCE) -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium text-black">Content</span>
+              <span class="label-text-alt text-content-muted">Use the rich text editor to write your blog post</span>
+            </label>
+            <div [ngClass]="{'border-error border rounded-lg': submitted && f['content'].errors}">
+              <editor formControlName="content" [init]="editorConfig"></editor>
+            </div>
+            @if (submitted && f['content'].errors) {
+              <label class="label">
+                <span class="label-text-alt text-error">{{ getErrorMessage('content') }}</span>
+              </label>
+            }
+          </div>
+
+          <!-- Featured Toggle -->
+          <div class="form-control w-full max-w-xs">
+            <label class="label cursor-pointer justify-start gap-4">
+              <input type="checkbox" formControlName="IsFeatured" class="toggle toggle-primary" />
+              <span class="label-text font-medium text-content-primary">Featured Blog</span>
+            </label>
+            <label class="label">
+              <span class="label-text-alt text-content-muted">Featured blogs appear prominently on the homepage</span>
+            </label>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end gap-4 pt-4 border-t border-base-300">
+            <a routerLink="/admin/blogs" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              @if (loading) {
+                <span class="loading loading-spinner"></span>
+              }
+              @if (isEdit) {
+                <span>Update Blog</span>
+              } @else {
+                <span>Create Blog</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

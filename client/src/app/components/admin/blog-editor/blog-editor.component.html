@@ -1,0 +1,138 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-white">
+      {{ isEditing ? 'Edit Blog' : 'Create New Blog' }}
+    </h1>
+
+    @if (loading) {
+      <div class="flex justify-center py-8">
+        <div class="loading loading-spinner loading-lg text-primary"></div>
+      </div>
+    } @else {
+      <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Title -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-white">Title</span>
+          </label>
+          <input
+            type="text"
+            formControlName="title"
+            class="input input-bordered w-full"
+            [class.input-error]="blogForm.get('title')?.invalid && blogForm.get('title')?.touched"
+            placeholder="Enter blog title"
+          />
+          @if (blogForm.get('title')?.invalid && blogForm.get('title')?.touched) {
+            <label class="label">
+              <span class="label-text-alt text-error">Title is required and must be at least 5 characters</span>
+            </label>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-white">Description</span>
+          </label>
+          <textarea
+            formControlName="description"
+            class="textarea textarea-bordered h-24"
+            [class.textarea-error]="blogForm.get('description')?.invalid && blogForm.get('description')?.touched"
+            placeholder="Enter blog description"
+          ></textarea>
+          @if (blogForm.get('description')?.invalid && blogForm.get('description')?.touched) {
+            <label class="label">
+              <span class="label-text-alt text-error">Description is required and must be at least 10 characters</span>
+            </label>
+          }
+        </div>
+
+        <!-- Content -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-white">Content</span>
+          </label>
+          <textarea
+            formControlName="content"
+            class="textarea textarea-bordered h-64"
+            [class.textarea-error]="blogForm.get('content')?.invalid && blogForm.get('content')?.touched"
+            placeholder="Enter blog content"
+          ></textarea>
+          @if (blogForm.get('content')?.invalid && blogForm.get('content')?.touched) {
+            <label class="label">
+              <span class="label-text-alt text-error">Content is required and must be at least 50 characters</span>
+            </label>
+          }
+        </div>
+
+        <!-- Image URL -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-white">Image URL</span>
+          </label>
+          <input
+            type="text"
+            formControlName="image"
+            class="input input-bordered w-full"
+            [class.input-error]="blogForm.get('image')?.invalid && blogForm.get('image')?.touched"
+            placeholder="Enter image URL"
+          />
+          @if (blogForm.get('image')?.invalid && blogForm.get('image')?.touched) {
+            <label class="label">
+              <span class="label-text-alt text-error">Image URL is required</span>
+            </label>
+          }
+        </div>
+
+        <!-- Category -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-white">Category</span>
+          </label>
+          <select
+            formControlName="categoryId"
+            class="select select-bordered w-full"
+            [class.select-error]="blogForm.get('categoryId')?.invalid && blogForm.get('categoryId')?.touched"
+          >
+            <option value="">Select a category</option>
+            @for (category of categories; track category.categoryId) {
+              <option [value]="category.categoryId">{{ category.name }}</option>
+            }
+          </select>
+          @if (blogForm.get('categoryId')?.invalid && blogForm.get('categoryId')?.touched) {
+            <label class="label">
+              <span class="label-text-alt text-error">Category is required</span>
+            </label>
+          }
+        </div>
+
+        <!-- Featured -->
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-4">
+            <input
+              type="checkbox"
+              formControlName="IsFeatured"
+              class="checkbox checkbox-primary"
+            />
+            <span class="label-text text-white">Featured Blog</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end gap-4">
+          <a routerLink="/admin/blogs" class="btn btn-ghost">Cancel</a>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="blogForm.invalid || loading"
+          >
+            @if (loading) {
+              <span class="loading loading-spinner"></span>
+            }
+            {{ isEditing ? 'Update Blog' : 'Create Blog' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

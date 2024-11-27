@@ -1,0 +1,93 @@
+<div class="min-h-screen bg-base-100 p-4 md:p-8">
+  <!-- Header -->
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-base-content">Manage Blogs</h1>
+        <p class="text-base-content/60 mt-1">{{ blogs.length }} {{ blogs.length === 1 ? 'Blog' : 'Blogs' }}</p>
+      </div>
+      <a routerLink="/admin/blogs/create" class="btn btn-primary w-full sm:w-auto">
+        <i class="fa fa-plus"></i>
+        New Blog
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="flex justify-center py-12">
+        <div class="loading loading-spinner loading-lg text-primary"></div>
+      </div>
+    } 
+    
+    <!-- Empty State -->
+    @else if (blogs.length === 0) {
+      <div class="text-center py-12 bg-base-200 rounded-box">
+        <div class="mb-4">
+          <i class="fa fa-newspaper text-5xl text-base-content/30"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">No Blogs Yet</h3>
+        <p class="text-base-content/60 mb-6">Start creating your first blog post</p>
+        <a routerLink="/admin/blogs/create" class="btn btn-primary">
+          <i class="fa fa-plus mr-2"></i>
+          Create Blog
+        </a>
+      </div>
+    } 
+    
+    <!-- Blog Grid -->
+    @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (blog of blogs; track blog.blogId) {
+          <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all">
+            <!-- Card Image -->
+            <figure class="relative h-48">
+              <img 
+                [src]="blog.image" 
+                [alt]="blog.title"
+                (error)="handleImageError($event)"
+                class="w-full h-full object-cover"
+              >
+              @if (blog.IsFeatured) {
+                <div class="absolute top-4 right-4">
+                  <div class="badge badge-primary">Featured</div>
+                </div>
+              }
+            </figure>
+
+            <div class="card-body">
+              <!-- Title and Category -->
+              <div class="mb-4">
+                <h2 class="card-title text-base-content">{{ blog.title }}</h2>
+                <div class="mt-2">
+                  <span class="badge badge-ghost">{{ getCategoryName(blog.categoryId) }}</span>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <p class="text-base-content/70 line-clamp-2 text-sm mb-4">{{ blog.description }}</p>
+
+              <!-- Action Buttons -->
+              <div class="card-actions justify-end border-t border-base-300 pt-4">
+                <a [routerLink]="['/blog', blog.blogId]" class="btn btn-ghost btn-sm">
+                  <i class="fa fa-eye"></i>
+                  View
+                </a>
+                <a [routerLink]="['/admin/blogs/edit', blog.blogId]" class="btn btn-ghost btn-sm">
+                  <i class="fa fa-edit"></i>
+                  Edit
+                </a>
+                <button 
+                  class="btn btn-ghost btn-sm text-error"
+                  (click)="deleteBlog(blog.blogId)"
+                >
+                  <i class="fa fa-trash"></i>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

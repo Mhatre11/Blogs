@@ -1,0 +1,131 @@
+@if (blog) {
+<!-- Hero Section -->
+<div class="relative h-[60vh] overflow-hidden">
+  <img
+    [src]="blog.image"
+    [alt]="blog.title"
+    class="w-full h-full object-contain"
+    (error)="onImageError($event)"
+  />
+  <div class="absolute inset-0"></div>
+
+  <!-- Content Overlay -->
+  <div class="absolute inset-0 flex items-center">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl">
+        <!-- Category -->
+        <div class="mb-4">
+          <span class="badge badge-primary gap-2">
+            <i class="fa fa-tag"></i>
+            {{ getCategoryName() }}
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+          {{ blog.title }}
+        </h1>
+
+        <!-- Description -->
+        <p class="text-lg max-w-2xl">
+          {{ blog.description }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Article Content -->
+    <article class="lg:col-span-8 prose prose-lg dark:prose-invert max-w-none">
+      <div
+        [innerHTML]="blog.content"
+        class="prose-headings:text-black prose-p:text-base-content/80"
+      ></div>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="lg:col-span-4">
+      <div class="sticky top-4 space-y-6">
+        <!-- Share Section -->
+        <div class="card bg-base-200">
+          <div class="card-body">
+            <h3 class="card-title text-black">
+              <i class="fa fa-share-alt mr-2"></i>
+              Share this article
+            </h3>
+            <div class="flex gap-2">
+              <button
+                class="btn btn-circle bg-white hover:bg-gray-100 border-none btn-sm"
+                (click)="share('twitter')"
+              >
+                <i class="fab fa-twitter text-[#1DA1F2]"></i>
+              </button>
+              <button
+                class="btn btn-circle bg-white hover:bg-gray-100 border-none btn-sm"
+                (click)="share('facebook')"
+              >
+                <i class="fab fa-facebook-f text-[#4267B2]"></i>
+              </button>
+              <button
+                class="btn btn-circle bg-white hover:bg-gray-100 border-none btn-sm"
+                (click)="share('linkedin')"
+              >
+                <i class="fab fa-linkedin-in text-[#0077B5]"></i>
+              </button>
+              <button
+                class="btn btn-circle bg-white hover:bg-gray-100 border-none btn-sm"
+                (click)="copyLink()"
+              >
+                <i class="fa fa-link text-gray-700"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Related Posts -->
+        @if (relatedPosts && relatedPosts.length > 0) {
+        <div class="card bg-base-200">
+          <div class="card-body">
+            <h3 class="card-title text-black">
+              <i class="fa fa-newspaper mr-2"></i>
+              Related Posts
+            </h3>
+            <div class="space-y-4">
+              @for (post of relatedPosts; track post.blogId) {
+              <a [routerLink]="['/blog', post.blogId]" class="block group">
+                <div class="flex gap-4 items-center">
+                  <img
+                    [src]="post.image"
+                    [alt]="post.title"
+                    class="w-2 h-16 rounded object-cover"
+                  />
+                  <div>
+                    <h4
+                      class="font-semibold text-white group-hover:text-primary transition-colors"
+                    >
+                      {{ post.title }}
+                    </h4>
+                    <p class="text-sm text-base-content/60 line-clamp-1">
+                      {{ post.description }}
+                    </p>
+                  </div>
+                </div>
+              </a>
+              }
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </aside>
+  </div>
+</div>
+} @else {
+<!-- Loading State -->
+<div class="flex justify-center items-center min-h-[60vh]">
+  <div class="loading loading-spinner loading-lg text-primary"></div>
+</div>
+}
